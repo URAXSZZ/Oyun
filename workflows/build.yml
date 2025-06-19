@@ -1,0 +1,32 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # İstersen kendi sürümünü yaz
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller pygame
+
+    - name: Build executable
+      run: |
+        pyinstaller --onefile --add-data "arka_plan.png;." --add-data "Coin.mp3;." oyun.py
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: exe-file
+        path: dist/oyun.exe  # Eğer py dosyanın adı oyun.py ise
